@@ -1,0 +1,1 @@
+24;LOGIN;USUARIOS;2026-07-03 08:24:32;ID=root,EMAIL=teste@gmail.com;
