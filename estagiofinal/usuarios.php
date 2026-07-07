@@ -124,6 +124,7 @@ if (!$usuarios) {
 <title>Usuários</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="js/usuarios.js"></script>
 <style>
 .fundo-tabela {
   background-image: url('img/fundologin.png');
@@ -182,7 +183,11 @@ if (!$usuarios) {
 
    <div class="row align-items-center">
   <div class="col-md-6 mb-3">
-    <br><input type="text"class="form-control"id="nome"name="nome"placeholder="Pesquisar usuário..."value="<?= htmlspecialchars($nome ?? '') ?>"></br>
+    <br><input type="text"
+class="form-control"
+id="myInput"
+placeholder="Pesquisar usuário..."
+onkeyup="myFunction()"></br>
   </div>
   <div class="col-md-3 mb-3 d-flex align-items-center">
   <button type="submit" class="btn btn-dark mr-3">
@@ -199,7 +204,7 @@ if (!$usuarios) {
 </div>
 <div class="container mt-4">
 
-  <table class="table table-striped">
+  <table id="myTable" class="table table-striped">
     <thead>
         <tr>
     <th colspan="12" class="text-left bg-light">

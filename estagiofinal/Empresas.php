@@ -6,6 +6,7 @@
   <title>EMPRESAS</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  <script src="js/empresas.js"></script>
   <style>
 .a {
       text-decoration: none;
@@ -45,6 +46,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body>
+
 <div class="container mt-4 fundo-tabela">
   <h2>EMPRESAS</h2>  
     <?php if (isset($_SESSION['CATEGORIA_ID'])): ?>
@@ -82,7 +84,11 @@ $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
     <input type="hidden" name="pagina" value="EMPRESAS">
    <div class="row align-items-center">
   <div class="col-md-6 mb-3">
-    <br><input type="text" class="form-control" id="nome" name="nome" placeholder="Pesquisar empresa..."value="<?php echo htmlspecialchars($nome); ?>"></br>
+    <br><input type="text"
+       class="form-control"
+       id="myInput"
+       placeholder="Pesquisar empresa..."
+       onkeyup="myFunction()"></br>
   </div>
   <div class="col-md-3 mb-3 d-flex align-items-center">
   <button type="submit" class="btn btn-dark mr-3">
@@ -172,7 +178,7 @@ $sql .= " ORDER BY e.NOME_FANTASIA ASC LIMIT $limite OFFSET $offset";
 $total = $total_registros;
 ?>
 
-<table class="table table-striped align-middle">
+<table id="myTable" class="table table-striped align-middle">
 <thead>
 <tr>
     <th colspan="12" class="text-left bg-light">

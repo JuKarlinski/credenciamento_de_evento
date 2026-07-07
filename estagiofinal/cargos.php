@@ -200,7 +200,7 @@ if (isset($_GET['id'])) {
 <title>CARGOS</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-
+<script src="js/cargos.js"></script>
 <style>
 .a {
       text-decoration: none;
@@ -362,7 +362,11 @@ $total = $total_registros;
 
    <div class="row align-items-center">
   <div class="col-md-6 mb-3">
-    <br><input type="text"class="form-control"id="nome"name="nome"placeholder="Pesquisar cargos..."value="<?= htmlspecialchars($nome ?? '') ?>"></br>
+    <br><input type="text"
+class="form-control"
+id="myInput"
+placeholder="Pesquisar cargo ou empresa..."
+onkeyup="myFunction()"></br>
   </div>
   <div class="col-md-3 mb-3 d-flex align-items-center">
   <button type="submit" class="btn btn-dark mr-3">
@@ -374,7 +378,7 @@ $total = $total_registros;
 </div>
 </div>
 </form>
-<table class="table table-striped mt-4">
+<table id="myTable" class="table table-striped mt-4">
 <thead>
     <th colspan="12" class="text-left bg-light">
         Total de Cargos: <?php echo $total; ?>

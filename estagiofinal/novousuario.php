@@ -67,12 +67,23 @@ registrarLog(
             <label>Nome</label>
             <input type="text" name="nome" class="form-control" required>
             <br>
-            <label>Email</label>
-            <input type="text" name="email" class="form-control" required>
-            <br>
-            <label>Senha</label>
-            <input type="password" name="senha" class="form-control" required>
-            <br>
+          <label>Email</label>
+<input 
+    type="email" 
+    name="email" 
+    class="form-control"
+    autocomplete="off"
+    value="">
+<br>
+
+<label>Senha</label>
+<input 
+    type="password" 
+    name="senha" 
+    class="form-control"
+    autocomplete="new-password"
+    value="">
+<br>
 
             <?php if ($empresa_id > 0): ?>
                 <input type="hidden" name="categoria_id" value="3">

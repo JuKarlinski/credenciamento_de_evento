@@ -32,10 +32,13 @@ if (isset($_POST['importar'])) {
 
             array_shift($linhasArquivo);
 
-            $importadas = 0;
-            $ignoradas = 0;
+          $importadas = 0;
+          $ignoradas = 0;
+          $linhasIgnoradas = [];
+          $numeroLinha = 1;
 
             foreach ($linhasArquivo as $linhaBruta) {
+                $numeroLinha++;
 
                 $linhaConvertida = mb_convert_encoding(
                     trim($linhaBruta),
@@ -46,21 +49,29 @@ if (isset($_POST['importar'])) {
                 $colunas = explode(';', $linhaConvertida);
 
                $nome_fantasia = mb_strtoupper(trim($colunas[0] ?? ''), 'UTF-8');
-$razao_social  = mb_strtoupper(trim($colunas[1] ?? ''), 'UTF-8');
-$tipo_nome     = strtoupper(trim($colunas[2] ?? ''));
+               $razao_social  = mb_strtoupper(trim($colunas[1] ?? ''), 'UTF-8');
+               $tipo_nome     = strtoupper(trim($colunas[2] ?? ''));
 
 
-$tipo_id = $tipos[$tipo_nome] ?? null;
-
-                if (empty($nome_fantasia) && empty($razao_social) && empty($tipo_nome)) {
-                    $ignoradas++;
-                    continue;
-                }
-
-                if ($nome_fantasia === '' && $razao_social === '') {
-                    $ignoradas++;
-                    continue;
-                }
+               $tipo_id = $tipos[$tipo_nome] ?? null;
+    if (empty($nome_fantasia) && empty($razao_social) && empty($tipo_nome)) {
+    $linhasIgnoradas[] = [
+        'linha' => $numeroLinha,
+        'dados' => $linhaBruta,
+        'motivo' => 'Linha vazia ou inválida'
+    ];
+    $ignoradas++;
+    continue;
+}
+    if ($nome_fantasia === '' && $razao_social === '') {
+    $linhasIgnoradas[] = [
+        'linha' => $numeroLinha,
+        'dados' => $linhaBruta,
+        'motivo' => 'Nome fantasia e razão social vazios'
+    ];
+    $ignoradas++;
+    continue;
+}
 
                 $ano = 2026;
 
@@ -76,11 +87,16 @@ $verifica->execute();
 $resultado = $verifica->get_result();
 
 
-                if ($resultado->num_rows > 0) {
-                    $ignoradas++;
-                    $verifica->close();
-                    continue;
-                }
+               if ($resultado->num_rows > 0) {
+    $linhasIgnoradas[] = [
+        'linha' => $numeroLinha,
+        'dados' => $linhaBruta,
+        'motivo' => 'Empresa já cadastrada'
+    ];
+    $ignoradas++;
+    $verifica->close();
+    continue;
+}
                 $verifica->close();
 
 $stmt = $conexao->prepare("
@@ -103,21 +119,22 @@ $stmt->bind_param("issi", $ano, $nome_fantasia, $razao_social, $tipo_id);
 
                     registrarLog('IMPORTACAO', 'EMPRESAS', $dadosLog);
                     $importadas++;
-                } else {
-                    $ignoradas++;
-                }
+               } else {
+    $linhasIgnoradas[] = [
+        'linha' => $numeroLinha,
+        'dados' => $linhaBruta,
+        'motivo' => 'Erro ao inserir no banco'
+    ];
+    $ignoradas++;
+}
                 $stmt->close();
             }
         }
-if ($ignoradas == 0) {
+$mensagem = "Importação concluída: $importadas empresas importadas com sucesso!";
 
-    $mensagem = "$importadas empresas importadas com sucesso!";
-
-} else {
-
-    $mensagem = "$importadas empresas importadas com sucesso!<br>$ignoradas linhas ignoradas.";
-}
-    
+if ($ignoradas > 0) {
+    $mensagem .= "<br>$ignoradas linhas ignoradas.";
+}  
 }
 }
 ?>
@@ -170,6 +187,24 @@ if ($ignoradas == 0) {
         </div>
     <?php } ?>
 
+    <?php if (!empty($linhasIgnoradas)) { ?>
+
+    <div class="alert alert-warning">
+
+        <b>Linhas ignoradas:</b><br><br>
+
+        <?php foreach ($linhasIgnoradas as $erro) { ?>
+
+            <b>Linha:</b> <?php echo $erro['linha']; ?><br>
+            <b>Motivo:</b> <?php echo $erro['motivo']; ?><br>
+            <b>Dados:</b> <?php echo $erro['dados']; ?><br>
+            <hr>
+
+        <?php } ?>
+
+    </div>
+
+<?php } ?>
     <div class="card">
 
         <div class="card-body">

@@ -4,6 +4,7 @@ include_once("logs.php");
 
 $tipos = $conexao->query("SELECT * FROM TIPOS");
 $temTipos = ($tipos && $tipos->num_rows > 0);
+
 if ($_POST) {
     $nome = trim(strip_tags($_POST['nome']));
     $ano = 2026;

@@ -148,7 +148,7 @@ $nome = strtoupper($d['NOME_PESSOA'] ?? '-');
 imagestring(
     $img,
     5,
-    (160 - strlen($nome) * 9) / 2,
+    (290 - strlen($nome) * 9) / 2,
     330,
     $nome,
     $black
@@ -245,7 +245,7 @@ imagedestroy($img);
     <div class="cracha-card">
         <img src="<?php echo $arquivoFinal . '?' . time(); ?>"  class="cracha-img"  alt="Crachá">   
         <div>
-            <a href="<?php echo $arquivoFinal; ?>"   download   class="btn btn-dark btn-download">Baixar Crachá  </a>
+            <a href="<?php echo $arquivoFinal; ?>"   download   class="btn btn-dark btn-download">Download</a>
         </div>
     </div>
 </div>

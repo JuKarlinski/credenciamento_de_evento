@@ -48,146 +48,133 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             ";
         } else {
+
             array_shift($linhas);
 
-            $importados = 0;
-            $erros = 0;
-            $duplicados = 0;
+           $importados = 0;
+$ignorados = 0;
+$linhasIgnoradas = [];
+$numeroLinha = 1;
+foreach ($linhas as $linha) {
 
-            foreach ($linhas as $linha) {
+    $numeroLinha++;
 
-                $linha = trim($linha);
+    $linha = trim($linha);
 
-                if (empty($linha)) {
-                    continue;
-                }
+    if (empty($linha)) {
+        $linhasIgnoradas[] = [
+            'linha' => $numeroLinha,
+            'dados' => $linha,
+            'motivo' => 'Linha vazia'
+        ];
+        $ignorados++;
+        continue;
+    }
 
-                $dados = explode(';', $linha);
+    $dados = explode(';', $linha);
 
-                $nome      = trim($dados[0] ?? '');
-                $cpf       = trim($dados[1] ?? '');
-                $documento = trim($dados[2] ?? '');
-                $telefone  = trim($dados[3] ?? '');
+    $nome      = trim($dados[0] ?? '');
+    $cpf       = trim($dados[1] ?? '');
+    $documento = trim($dados[2] ?? '');
+    $telefone  = trim($dados[3] ?? '');
 
-                if (empty($nome)) {
-                    continue;
-                }
-                if (!empty($documento)) {
+    // NOME VAZIO
+    if (empty($nome)) {
+        $linhasIgnoradas[] = [
+            'linha' => $numeroLinha,
+            'dados' => $linha,
+            'motivo' => 'Nome vazio'
+        ];
+        $ignorados++;
+        continue;
+    }
 
-              $verifica = $conexao->prepare("
-              SELECT ID
-              FROM pessoas
-              WHERE DOCUMENTO = ?
+if (!empty($cpf)) {
+
+    $verifica = $conexao->prepare("
+        SELECT ID
+        FROM pessoas
+        WHERE EMPRESA_ID = ?
+          AND CPF = ?
     ");
-
-             $verifica->bind_param("s", $documento);
+    $verifica->bind_param("is", $empresa_id, $cpf);
 
 } else {
 
-             $verifica = $conexao->prepare("
-             SELECT ID
-            FROM pessoas
-            WHERE UPPER(NOME) = UPPER(?)
+    $verifica = $conexao->prepare("
+        SELECT ID
+        FROM pessoas
+        WHERE EMPRESA_ID = ?
+          AND UPPER(NOME) = UPPER(?)
     ");
+    $verifica->bind_param("is", $empresa_id, $nome);
 
-            $verifica->bind_param("s", $nome);
-}  
+}
 
-            $verifica->execute();
-            $resultado = $verifica->get_result();
+$verifica->execute();
+$resultado = $verifica->get_result();
 
-           if ($resultado->num_rows > 0) {
-    $duplicados++;
+// DUPLICADO
+if ($resultado->num_rows > 0) {
+
+    $linhasIgnoradas[] = [
+        'linha' => $numeroLinha,
+        'dados' => $linha,
+        'motivo' => 'Registro duplicado'
+    ];
+
+    $ignorados++;
     $verifica->close();
     continue;
 }
-            $verifica->close();
 
-                $stmt = $conexao->prepare("
-                    INSERT INTO pessoas
-                    (
-                        EMPRESA_ID,
-                        NOME,
-                        CPF,
-                        DOCUMENTO,
-                        TELEFONE,
-                        INGRESSO_PERMANENTE,
-                        FOTO,
-                        CARGO_ID
-                    )
-                    VALUES
-                    (
-                        ?, ?, ?, ?, ?, '', '', NULL
-                    )
-                ");
+$verifica->close();
 
-                if (!$stmt) {
-                    $erros++;
-                    continue;
-                }
+    $stmt = $conexao->prepare("
+        INSERT INTO pessoas
+        (EMPRESA_ID, NOME, CPF, DOCUMENTO, TELEFONE, INGRESSO_PERMANENTE, FOTO, CARGO_ID)
+        VALUES (?, ?, ?, ?, ?, '', '', NULL)
+    ");
 
-                $stmt->bind_param(
-                    "issss",
-                    $empresa_id,
-                    $nome,
-                    $cpf,
-                    $documento,
-                    $telefone
-                );
-
-                if ($stmt->execute()) {
-
-                    registrarLog(
-                        'IMPORTACAO',
-                        'PESSOAS',
-                        "EMPRESA_ID=$empresa_id,NOME=$nome,CPF=$cpf,DOCUMENTO=$documento,TELEFONE=$telefone"
-                    );
-
-                    $importados++;
-
-                } else {
-
-                    $erros++;
-                }
-
-                $stmt->close();
-            }
-
-
-if ($importados > 0 && $duplicados == 0 && $erros == 0) {
-
-    $mensagem = "
-        <div class='alert alert-success'>
-            $importados pessoa(s) importada(s) com sucesso!
-        </div>
-    ";
-
-} else {
-
-    if ($duplicados > 0) {
-        $mensagem .= "
-            <div class='alert alert-warning'>
-                $duplicados linha(s) duplicada(s) ignorada(s).
-            </div>
-        ";
+    if (!$stmt) {
+        $linhasIgnoradas[] = [
+            'linha' => $numeroLinha,
+            'dados' => $linha,
+            'motivo' => 'Erro ao preparar INSERT'
+        ];
+        $ignorados++;
+        continue;
     }
 
-    if ($erros > 0) {
-        $mensagem .= "
-            <div class='alert alert-danger'>
-                $erros registro(s) não puderam ser importados.
-            </div>
-        ";
+    $stmt->bind_param("issss", $empresa_id, $nome, $cpf, $documento, $telefone);
+
+    if ($stmt->execute()) {
+        registrarLog(
+            'IMPORTACAO',
+            'PESSOAS',
+            "EMPRESA_ID=$empresa_id,NOME=$nome,CPF=$cpf,DOCUMENTO=$documento,TELEFONE=$telefone"
+        );
+
+        $importados++;
+
+    } else {
+        $linhasIgnoradas[] = [
+            'linha' => $numeroLinha,
+            'dados' => $linha,
+            'motivo' => 'Erro ao inserir no banco'
+        ];
+        $ignorados++;
     }
 
-    if ($importados > 0) {
-        $mensagem .= "
-            <div class='alert alert-info'>
-                $importados pessoa(s) importada(s) com sucesso!
-            </div>
-        ";
-    }
+    $stmt->close();
 }
+
+         $mensagem = "
+<div class='alert alert-primary' style='font-weight:500'>
+    Importação concluída: $importados pessoas importadas com sucesso!<br>
+    $ignorados linhas ignoradas.
+</div>
+";
         }
     }
 }
@@ -244,7 +231,22 @@ if ($importados > 0 && $duplicados == 0 && $erros == 0) {
 </div>
 
     <?php echo $mensagem; ?>
+<?php if (!empty($linhasIgnoradas)) { ?>
 
+<div class="alert alert-warning">
+    <b>Linhas ignoradas:</b><br><br>
+
+    <?php foreach ($linhasIgnoradas as $erro) { ?>
+
+        <b>Linha:</b> <?php echo $erro['linha']; ?><br>
+        <b>Motivo:</b> <?php echo $erro['motivo']; ?><br>
+        <b>Dados:</b> <?php echo $erro['dados']; ?><br>
+        <hr>
+
+    <?php } ?>
+</div>
+
+<?php } ?>
     <div class="card">
         <div class="card-body">
 

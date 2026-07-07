@@ -139,7 +139,7 @@ exit;
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
- 
+ <script src="js/tipos.js"></script>
 <style>
 .a {
       text-decoration: none;
@@ -250,12 +250,11 @@ exit;
     <div class="form-row align-items-end">
 
         <div class="col-md-6">
-            <input type="text"
-                   class="form-control"
-                   id="nome"
-                   name="nome"
-                   placeholder="Pesquisar tipo..."
-                   value="<?= htmlspecialchars($nome) ?>">
+           <input type="text"
+       class="form-control"
+       id="myInput"
+       placeholder="Pesquisar tipo..."
+       onkeyup="myFunction()">
         </div>
 
         <div class="col-auto">
@@ -308,7 +307,7 @@ $inicio = ($pagina - 1) * $por_pagina;
 $total_paginas = ceil($total / $por_pagina);
 ?>
 
-<table class="table table-striped">
+<table id="myTable" class="table table-striped">
     <br>
     <thead>
       <tr>
