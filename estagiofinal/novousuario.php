@@ -33,13 +33,13 @@ $dadosLog =
 
 registrarLog(
     'INCLUSAO',
-    'USUARIOS',
+    'usuarios',
     $dadosLog
 );
         if ($empresa_id > 0) {
-            header("Location: pag1.php?pagina=USUÁRIOS&empresa_id=" . $empresa_id . "&sucesso=1");
+            header("Location: pag1.php?pagina=usuarios&empresa_id=" . $empresa_id . "&sucesso=1");
         } else {
-            header("Location: pag1.php?pagina=USUÁRIOS&sucesso=1");
+            header("Location: pag1.php?pagina=usuarios&sucesso=1");
         }
         exit;
     } else {

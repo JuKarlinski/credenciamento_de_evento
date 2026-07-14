@@ -11,25 +11,25 @@ $empresa_id = isset($_GET['empresa_id']) ? intval($_GET['empresa_id']) : 0;
 
 $sql = "
 SELECT
-    CARGOS.ID,
-    CARGOS.NOME,
-    EMPRESAS.NOME_FANTASIA AS EMPRESA
-FROM CARGOS
-INNER JOIN EMPRESAS
-    ON EMPRESAS.ID = CARGOS.ID_EMPRESA
+    cargos.ID,
+    cargos.NOME,
+    empresas.NOME_FANTASIA AS EMPRESA
+FROM cargos
+INNER JOIN empresas
+    ON empresas.ID = cargos.id_empresa
 WHERE 1=1
 ";
 
 if (!empty($nome)) {
     $nome = $conexao->real_escape_string($nome);
-    $sql .= " AND CARGOS.NOME LIKE '%$nome%'";
+    $sql .= " AND cargos.NOME LIKE '%$nome%'";
 }
 
 if ($empresa_id > 0) {
-    $sql .= " AND CARGOS.ID_EMPRESA = '$empresa_id'";
+    $sql .= " AND cargos.id_empresa = '$empresa_id'";
 }
 
-$sql .= " ORDER BY CARGOS.NOME";
+$sql .= " ORDER BY cargos.NOME";
 
 $result = $conexao->query($sql);
 

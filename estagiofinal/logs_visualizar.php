@@ -1,4 +1,5 @@
 <?php
+include "conexao.php";
 if (($_SESSION['CATEGORIA_ID'] ?? null) != 1) {
     die("Acesso negado");
 }
@@ -11,7 +12,23 @@ $arquivos = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($pastaBase)
 );
 ?>
+<?php
 
+$usuarios = [];
+
+$sql = "SELECT nome FROM usuarios ORDER BY nome";
+
+$resultado = mysqli_query($conexao, $sql);
+
+if ($resultado) {
+
+    while ($linha = mysqli_fetch_assoc($resultado)) {
+        $usuarios[] = $linha['nome'];
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -119,35 +136,72 @@ $arquivos = new RecursiveIteratorIterator(
 <body>
 <div class="container mt-4 fundo-tabela mb-4">
   <h2>LOGS DO SISTEMA</h2>
-  <small> Monitoramento de ações do sistema (INSERT, UPDATE, DELETE, LOGIN)</small>
+  <small> Monitoramento de ações do sistema </small>
   <hr>
 <form method="GET">
-<input type="hidden" name="pagina" value="LOGS_VISUALIZAR">
+<input type="hidden" name="pagina" value="logs_visualizar">
 <div class="row">
 
     <div class="col-md-3 mb-2">
-        <input type="text"
-               name="usuario"
-               class="form-control"
-               placeholder="Usuário"
-               value="<?= htmlspecialchars($usuario) ?>">
-    </div>
+    <select name="usuario" class="form-control">
+        <option value="">Usuários</option>
+        <?php foreach($usuarios as $u): ?>
+        <option value="<?= $u ?>"
+        <?= $usuario == $u ? 'selected' : '' ?>>
+            <?= $u ?>
+        </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+   <div class="col-md-3 mb-2">
+    <select name="tipo" class="form-control">
+        <option value="">Operações</option>
+        <option value="ALTERACAO" 
+        <?= $tipo == 'ALTERACAO' ? 'selected' : '' ?>>
+            Alteração
+        </option>
+        <option value="EXCLUSAO"
+        <?= $tipo == 'EXCLUSAO' ? 'selected' : '' ?>>
+            Exclusão
+        </option>
+        <option value="IMPORTACAO"
+        <?= $tipo == 'IMPORTACAO' ? 'selected' : '' ?>>
+            Importação
+        </option>
+        <option value="LOGIN"
+        <?= $tipo == 'LOGIN' ? 'selected' : '' ?>>
+            Login
+        </option>
+    </select>
+</div>
 
     <div class="col-md-3 mb-2">
-        <input type="text"
-               name="tipo"
-               class="form-control"
-               placeholder="Operação"
-               value="<?= htmlspecialchars($tipo) ?>">
+        <select name="tabela" class="form-control">
+            <option value="">Tabelas</option>
+            <option value="empresas"
+            <?= $tabela == 'empresas' ? 'selected' : '' ?>>
+                Empresas
+            </option>
+            <option value="pessoas"
+            <?= $tabela == 'pessoas' ? 'selected' : '' ?>>
+                Pessoas
+            </option>
+            <option value="cargos"
+            <?= $tabela == 'cargos' ? 'selected' : '' ?>>
+                Cargos
+            </option>
+            <option value="usuarios"
+            <?= $tabela == 'usuarios' ? 'selected' : '' ?>>
+                Usuários
+            </option>
+            <option value="tipos"
+            <?= $tabela == 'tipos' ? 'selected' : '' ?>>
+                Tipos
+            </option>
+        </select>
     </div>
 
-    <div class="col-md-3 mb-2">
-        <input type="text"
-               name="tabela"
-               class="form-control"
-               placeholder="Tabela"
-               value="<?= htmlspecialchars($tabela) ?>">
-    </div>
 
     <div class="col-md-3 mb-2">
         <input type="date"
@@ -159,7 +213,7 @@ $arquivos = new RecursiveIteratorIterator(
 
 <div class="mt-2">
     <button type="submit" class="btn btn-dark">Pesquisar</button>
-    <a href="pag1.php?pagina=LOGS_VISUALIZAR"class="btn btn-secondary">Reiniciar</a>
+    <a href="pag1.php?pagina=logs_visualizar"class="btn btn-secondary">Reiniciar</a>
 </div>
 
 </form>
@@ -199,7 +253,7 @@ foreach ($arquivos as $file):
 
 <div class="arquivo-log <?= $ativo ?>">
 
-<a href="?pagina=LOGS_VISUALIZAR
+<a href="?pagina=logs_visualizar
 &file=<?= urlencode($file->getPathname()) ?>
 &usuario=<?= urlencode($usuario) ?>
 &tipo=<?= urlencode($tipo) ?>
@@ -268,9 +322,9 @@ $dadosNovos   = trim($partes[5] ?? '');
         $dadosNovos   = str_replace(",", " | ", $dadosNovos);
 
 
-        if ($usuario != '' && $usuarioLog != $usuario) {
-            continue;
-        }
+        if ($usuario != '' && strcasecmp(trim($usuarioLog), trim($usuario)) != 0) {
+    continue;
+}
 
         if ($tipo && stripos($tipoLog, $tipo) === false) {
             continue;
@@ -332,11 +386,11 @@ echo "
 
        echo "<hr style='border-color:#334155;'>";
 
-} // fecha IF ALTERACAO
+} 
 
 echo "</div>";
 
-} // fecha FOREACH
+}
 
 echo "</div>";
 

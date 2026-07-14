@@ -60,13 +60,13 @@ if ($usuario) {
 
     registrarLog(
         'EXCLUSAO',
-        'USUARIOS',
+        'usuarios',
         $dadosLog
     );
 }
 $conexao->query("DELETE FROM usuarios WHERE ID = $id");
 
-header("Location: pag1.php?pagina=USUÁRIOS&empresa_id=$empresa_id");
+header("Location: pag1.php?pagina=usuarios&empresa_id=$empresa_id");
 exit;
 }
 
@@ -75,7 +75,7 @@ SELECT usuarios.*,
        categorias.nome as categoria_nome, 
        e.NOME_FANTASIA as nome_empresa
 FROM usuarios
-LEFT JOIN categorias ON usuarios.CATEGORIA_ID = categorias.ID
+LEFT JOIN categorias ON usuarios.CATEGORIA_ID = categorias.id
 LEFT JOIN empresas e ON usuarios.EMPRESA_ID = e.ID
 WHERE 1=1
 ";
@@ -162,7 +162,7 @@ if (!$usuarios) {
 <?php if (($_SESSION['CATEGORIA_ID'] ?? null) != 3) { ?>
 
     <?php if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) { ?>
-        <a href="pag1.php?pagina=NOVOUSUARIO&empresa_id=<?= $empresa_id ?>" class="btn btn-dark">
+        <a href="pag1.php?pagina=novousuario&empresa_id=<?= $empresa_id ?>" class="btn btn-dark">
             Novo Usuário
         </a>
     <?php } else { ?>
@@ -178,7 +178,7 @@ if (!$usuarios) {
 </a>
 
 <form method="GET" action="pag1.php">
-        <input type="hidden" name="pagina" value="USUÁRIOS">
+        <input type="hidden" name="pagina" value="usuarios">
         <input type="hidden" name="empresa_id" value="<?= $empresa_id ?>">
 
    <div class="row align-items-center">
@@ -193,7 +193,7 @@ onkeyup="myFunction()"></br>
   <button type="submit" class="btn btn-dark mr-3">
     <i class="bi bi-search"></i>
   </button>
-<a href="pag1.php?pagina=USUÁRIOS&empresa_id=<?= $empresa_id ?>" class="btn btn-dark px-4">
+<a href="pag1.php?pagina=usuarios&empresa_id=<?= $empresa_id ?>" class="btn btn-dark px-4">
     Limpar
 </a>
 </div>
@@ -244,10 +244,10 @@ onkeyup="myFunction()"></br>
 
 <?php 
 if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) { ?>
-    <a href="pag1.php?pagina=EDITAR&id=<?= $u['ID'] ?>" class="btn btn-success btn-sm">
+    <a href="pag1.php?pagina=editar&id=<?= $u['ID'] ?>" class="btn btn-success btn-sm">
         Alterar
     </a>
-    <a href="pag1.php?pagina=USUÁRIOS&excluir=<?= $u['ID'] ?>&empresa_id=<?= $empresa_id ?>"
+    <a href="pag1.php?pagina=usuarios&excluir=<?= $u['ID'] ?>&empresa_id=<?= $empresa_id ?>"
        class="btn btn-danger btn-sm"
        onclick="return confirm('Deseja excluir este usuário?')">
         Excluir
@@ -325,7 +325,7 @@ $max_links = 2;
 if ($pagina > 1) {
 
     echo '<a class="btn btn-dark btn-sm"
-           href="?pagina=USUÁRIOS&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">
+           href="?pagina=usuarios&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">
             «
           </a>';
 
@@ -340,7 +340,7 @@ if ($pagina > 1) {
 if ($pagina < $total_paginas - $max_links) {
     echo '<span class="dots">...</span>';
     echo '<a class="btn btn-outline-dark btn-sm"
-          href="?pagina=USUÁRIOS&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
+          href="?pagina=usuarios&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
           . $total_paginas .
          '</a>';
 }
@@ -353,7 +353,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
         echo '<span class="active-page">' . $i . '</span>';
     } else {
         echo '<a class="btn btn-outline-dark btn-sm"
-                href="?pagina=USUÁRIOS&pagina_num=' . $i . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
+                href="?pagina=usuarios&pagina_num=' . $i . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
                 . $i .
              '</a>';
     }
@@ -362,7 +362,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
 if ($pagina < $total_paginas - $max_links) {
     echo '<span class="dots">...</span>';
     echo '<a class="btn btn-outline-dark btn-sm"
-          href="?pagina=USUÁRIOS&pagina_num=1&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
+          href="?pagina=usuarios&pagina_num=1&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">'
             . $total_paginas .
          '</a>';
 }
@@ -370,7 +370,7 @@ if ($pagina < $total_paginas - $max_links) {
 if ($pagina < $total_paginas) {
 
   echo '<a class="btn btn-dark btn-sm"
-        href="?pagina=USUÁRIOS&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">
+        href="?pagina=usuarios&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '&empresa_id=' . $empresa_id . '">
             »
           </a>';
 

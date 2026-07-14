@@ -25,7 +25,7 @@ if ($_POST && empty($erroConexao)) {
 
     } else {
 
-        $sql = "SELECT * FROM USUARIOS
+        $sql = "SELECT * FROM usuarios
                 WHERE EMAIL = '$email'
                 AND SENHA = '$senha'";
 
@@ -41,10 +41,10 @@ if ($_POST && empty($erroConexao)) {
             $_SESSION['EMPRESA_ID'] = $dados['EMPRESA_ID'];
 
             registrarLog(
-                'LOGIN',
-                'USUARIOS',
-                'ID=' . $dados['ID'] . ',EMAIL=' . $email
-            );
+            'LOGIN',
+            'usuarios',
+            'ID=' . $dados['ID'] . ',EMAIL=' . $email
+);
 
             header("Location: pag1.php");
             exit;

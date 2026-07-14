@@ -78,7 +78,7 @@ foreach ($linhas as $linha) {
     $documento = trim($dados[2] ?? '');
     $telefone  = trim($dados[3] ?? '');
 
-    // NOME VAZIO
+
     if (empty($nome)) {
         $linhasIgnoradas[] = [
             'linha' => $numeroLinha,
@@ -114,7 +114,6 @@ if (!empty($cpf)) {
 $verifica->execute();
 $resultado = $verifica->get_result();
 
-// DUPLICADO
 if ($resultado->num_rows > 0) {
 
     $linhasIgnoradas[] = [
@@ -151,7 +150,7 @@ $verifica->close();
     if ($stmt->execute()) {
         registrarLog(
             'IMPORTACAO',
-            'PESSOAS',
+            'pessoas',
             "EMPRESA_ID=$empresa_id,NOME=$nome,CPF=$cpf,DOCUMENTO=$documento,TELEFONE=$telefone"
         );
 
@@ -275,7 +274,7 @@ $verifica->close();
         <i class="bi bi-upload"></i> Importar
     </button>
 
-    <a href="pag1.php?pagina=PESSOAS&empresa_id=<?php echo $empresa_id; ?>"
+    <a href="pag1.php?pagina=pessoas&empresa_id=<?php echo $empresa_id; ?>"
        class="btn btn-secondary">
         <i class="bi bi-arrow-left"></i> Voltar</a>
 </div>

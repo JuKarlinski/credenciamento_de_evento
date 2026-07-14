@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['ajax'])) {
         exit;
     }
 
-    $sql = "INSERT INTO CARGOS (NOME, ID_EMPRESA)
+    $sql = "INSERT INTO cargos (NOME, id_empresa)
             VALUES ('$nome', '$id_empresa')";
 
     if ($conexao->query($sql)) {
@@ -44,7 +44,7 @@ $nome_empresa = '';
 if ($empresa_id > 0) {
     $res = $conexao->query("
         SELECT NOME_FANTASIA 
-        FROM EMPRESAS 
+        FROM empresas
         WHERE ID = $empresa_id
     ");
 
@@ -60,7 +60,7 @@ if (isset($_GET['editar'])) {
     $editar = true;
     $id_editar = intval($_GET['editar']);
 
-    $sql_editar = "SELECT * FROM CARGOS WHERE ID = $id_editar";
+    $sql_editar = "SELECT * FROM cargos WHERE ID = $id_editar";
     $result_editar = $conexao->query($sql_editar);
     $dados_editar = $result_editar->fetch_assoc();
 }
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = intval($_POST['id']);
         $nome = $conexao->real_escape_string(trim($_POST['nome']));
 
-        $buscaAntigo = $conexao->query("SELECT * FROM CARGOS WHERE ID = $id");
+        $buscaAntigo = $conexao->query("SELECT * FROM cargos WHERE ID = $id");
         $antigo = $buscaAntigo->fetch_assoc();
 
         if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) {
@@ -92,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
 
             $sql = "
-                UPDATE CARGOS
+                UPDATE cargos
                 SET NOME = '$nome',
-                    ID_EMPRESA = '$id_empresa'
+                    id_empresa = '$id_empresa'
                 WHERE ID = $id
             ";
 
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
 
             $sql = "
-                UPDATE CARGOS
+                UPDATE cargos
                 SET NOME = '$nome'
                 WHERE ID = $id
             ";
@@ -119,9 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $dadosNovos =
             "ID=$id,NOME=$nome,ID_EMPRESA=$empresa_log";
 
-        registrarLog('ALTERACAO', 'CARGOS', $dadosAntigos, $dadosNovos);
+        registrarLog('ALTERACAO', 'cargos', $dadosAntigos, $dadosNovos);
 
-        header("Location: pag1.php?pagina=CARGOS&empresa_id=$empresa_id");
+        header("Location: pag1.php?pagina=cargos&empresa_id=$empresa_id");
         exit;
     }
 
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($erro_empresa) && !empty($id_empresa)) {
 
-        $sql = "INSERT INTO CARGOS (NOME, ID_EMPRESA)
+        $sql = "INSERT INTO cargos (NOME, id_empresa)
                 VALUES ('$nome', '$id_empresa')";
 
         if ($conexao->query($sql)) {
@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $dadoslog =
         "ID=$id_cargo,NOME=$nome,ID_EMPRESA=$id_empresa";
 
-    registrarLog('INCLUSAO', 'CARGOS', $dadoslog);
+    registrarLog('INCLUSAO', 'cargos', $dadoslog);
 $empresa_id = $id_empresa;
 }
     }
@@ -170,7 +170,7 @@ if (isset($_GET['id'])) {
 
     $id = intval($_GET['id']);
 
-    $buscaCargo = $conexao->query("SELECT * FROM CARGOS WHERE ID = $id");
+    $buscaCargo = $conexao->query("SELECT * FROM cargos WHERE ID = $id");
     $cargo = $buscaCargo->fetch_assoc();
 
     if ($cargo) {
@@ -178,17 +178,17 @@ if (isset($_GET['id'])) {
         $dadoslog =
             "ID={$cargo['ID']},NOME={$cargo['NOME']},ID_EMPRESA={$cargo['ID_EMPRESA']}";
 
-        registrarLog('EXCLUSAO', 'CARGOS', $dadoslog);
+        registrarLog('EXCLUSAO', 'cargos', $dadoslog);
 
         if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) {
-            $conexao->query("DELETE FROM CARGOS WHERE ID = $id");
+            $conexao->query("DELETE FROM cargos WHERE ID = $id");
         } else {
             $empresa = $_SESSION['EMPRESA_ID'];
-            $conexao->query("DELETE FROM CARGOS WHERE ID = $id AND ID_EMPRESA = $empresa");
+            $conexao->query("DELETE FROM cargos WHERE ID = $id AND ID_EMPRESA = $empresa");
         }
     }
 
-   header("Location: pag1.php?pagina=CARGOS&empresa_id=$empresa_id");
+   header("Location: pag1.php?pagina=cargos&empresa_id=$empresa_id");
     exit;
 }
 ?>
@@ -275,11 +275,11 @@ if (isset($_GET['id'])) {
 <?php
 if ($empresa_id > 0) {
     $empresas = $conexao->query("
-        SELECT * FROM EMPRESAS
+        SELECT * FROM empresas
         WHERE ID = '$empresa_id'
     ");
 } else {
-    $empresas = $conexao->query("SELECT * FROM EMPRESAS");
+    $empresas = $conexao->query("SELECT * FROM empresas");
 }
 
 while($empresa = $empresas->fetch_assoc()){
@@ -309,7 +309,7 @@ echo '
 <input type="hidden" name="alterar" value="1">
 <input type="hidden" name="id" value="<?= $dados_editar['ID'] ?>">
 <button class="btn btn-success btn-block">Salvar Alterações</button>
-<a href="pag1.php?pagina=CARGOS" class="btn btn-secondary btn-block">Cancelar</a>
+<a href="pag1.php?pagina=cargos" class="btn btn-secondary btn-block">Cancelar</a>
 <?php } else { ?>
 <button class="btn btn-dark btn-block">Cadastrar</button>
 <?php } ?>
@@ -328,22 +328,22 @@ echo '
 $categoria = $_SESSION['CATEGORIA_ID'] ?? 0;
 
 $sql = "
-SELECT CARGOS.*, EMPRESAS.NOME_FANTASIA AS EMPRESA
-FROM CARGOS
-INNER JOIN EMPRESAS ON EMPRESAS.ID = CARGOS.ID_EMPRESA
+SELECT cargos.*, empresas.NOME_FANTASIA AS empresa
+FROM cargos
+INNER JOIN empresas ON empresas.ID = cargos.ID_EMPRESA
 WHERE 1=1
 ";
 
-if (!empty($nome_busca)) {
-    $nome_safe = $conexao->real_escape_string($nome_busca);
-    $sql .= " AND CARGOS.NOME LIKE '%$nome_safe%'";
+if (!empty($nome)) {
+    $nome_safe = $conexao->real_escape_string($nome);
+    $sql .= " AND cargos.NOME LIKE '%$nome_safe%'";
 }
 
 if ($categoria == 3) {
-    $sql .= " AND CARGOS.ID_EMPRESA = '" . $_SESSION['EMPRESA_ID'] . "'";
+    $sql .= " AND cargos.ID_EMPRESA = '" . $_SESSION['EMPRESA_ID'] . "'";
 }
 if ($empresa_id > 0) {
-    $sql .= " AND CARGOS.ID_EMPRESA = '$empresa_id'";
+    $sql .= " AND cargos.ID_EMPRESA = '$empresa_id'";
 }
 $sql_total = $sql;
 $result_total = $conexao->query($sql_total);
@@ -351,13 +351,13 @@ $total_registros = $result_total->num_rows;
 
 $total_paginas = ceil($total_registros / $por_pagina);
 
-$sql .= " ORDER BY CARGOS.ID ASC LIMIT $inicio, $por_pagina";
+$sql .= " ORDER BY cargos.ID ASC LIMIT $inicio, $por_pagina";
 
 $result = $conexao->query($sql);
 $total = $total_registros;
 ?>
 <form method="GET" action="pag1.php">
-        <input type="hidden" name="pagina" value="CARGOS">
+        <input type="hidden" name="pagina" value="cargos">
         <input type="hidden" name="empresa_id" value="<?= $empresa_id ?>">
 
    <div class="row align-items-center">
@@ -372,7 +372,7 @@ onkeyup="myFunction()"></br>
   <button type="submit" class="btn btn-dark mr-3">
     <i class="bi bi-search"></i>
   </button>
-<a href="pag1.php?pagina=CARGOS&empresa_id=<?= $empresa_id ?>" class="btn btn-dark px-4">
+<a href="pag1.php?pagina=cargos&empresa_id=<?= $empresa_id ?>" class="btn btn-dark px-4">
     Limpar
   </a>
 </div>
@@ -397,7 +397,7 @@ onkeyup="myFunction()"></br>
 </tr>
 </thead>
 
-<tbody id="listaCargos">
+<tbody id="listacargos">
 <?php while($linha = $result->fetch_assoc()){ ?>
 <tr>
 
@@ -408,17 +408,17 @@ onkeyup="myFunction()"></br>
 <td><?= htmlspecialchars($linha['NOME']) ?></td>
 
 <?php if ($categoria != 3) { ?>
-<td><?= htmlspecialchars($linha['EMPRESA']) ?></td>
+<td><?= htmlspecialchars($linha['empresa']) ?></td>
 <?php } ?>
 
 <td>
 
 <?php if ($categoria != 2) { ?>
 
-<a href="pag1.php?pagina=CARGOS&editar=<?= $linha['ID'] ?>&empresa_id=<?= $empresa_id ?>"
+<a href="pag1.php?pagina=cargos&editar=<?= $linha['ID'] ?>&empresa_id=<?= $empresa_id ?>"
   class="btn btn-success btn-sm">Alterar</a>
 
-<a href="pag1.php?pagina=CARGOS&id=<?= $linha['ID'] ?>&empresa_id=<?= $empresa_id ?>"
+<a href="pag1.php?pagina=cargos&id=<?= $linha['ID'] ?>&empresa_id=<?= $empresa_id ?>"
    class="btn btn-danger btn-sm"
    onclick="return confirm('Deseja excluir?')">
 Excluir
@@ -436,10 +436,12 @@ Excluir
 document.getElementById("formCargo").addEventListener("submit", function(e){
     e.preventDefault();
 
-    const empresaSelect = document.querySelector('[name="id_empresa"]');
+   const empresaSelect = document.querySelector('[name="id_empresa"]');
 
+if (empresaSelect) {
     document.getElementById("empresa_texto").value =
         empresaSelect.options[empresaSelect.selectedIndex].text;
+}
 
     const formData = new FormData(this);
     formData.append("ajax", "1");
@@ -456,7 +458,7 @@ document.getElementById("formCargo").addEventListener("submit", function(e){
             return;
         }
 
-        const tabela = document.getElementById("listaCargos");
+        const tabela = document.getElementById("listacargos");
 
         const linha = `
 <tr>
@@ -526,7 +528,7 @@ $max_links = 2;
 if ($pagina > 1) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=CARGOS&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=cargos&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
             «
           </a>';
 
@@ -540,7 +542,7 @@ if ($pagina > 1) {
 
 if ($pagina > ($max_links + 1)) {
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=CARGOS&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
+            href="?pagina=cargos&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
     echo '<span class="dots">...</span>';
 }
 
@@ -552,7 +554,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
         echo '<span class="active-page">' . $i . '</span>';
     } else {
         echo '<a class="btn btn-outline-dark btn-sm"
-                href="?pagina=CARGOS&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
+                href="?pagina=cargos&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
                 . $i .
              '</a>';
     }
@@ -561,7 +563,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
 if ($pagina < $total_paginas - $max_links) {
     echo '<span class="dots">...</span>';
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=CARGOS&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
+            href="?pagina=cargos&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
             . $total_paginas .
          '</a>';
 }
@@ -569,7 +571,7 @@ if ($pagina < $total_paginas - $max_links) {
 if ($pagina < $total_paginas) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=CARGOS&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=cargos&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
             »
           </a>';
 

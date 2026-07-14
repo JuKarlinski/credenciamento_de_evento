@@ -151,7 +151,7 @@ $limite = $dados_limite
 
 registrarLog(
     'INCLUSAO',
-    'PESSOAS',
+    'pessoas',
     $dadosLog
 );
             $total_pessoas++; 
@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function() {
     echo json_encode($lista);
     ?>;
 
-    function atualizarCargos() {
+    function atualizarcargos() {
         if (!cargoSelect) return;
         let empresa = empresaSelect ? empresaSelect.value : '';
         if (!empresa || empresa === '') {
@@ -343,9 +343,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (empresaSelect) {
-        empresaSelect.addEventListener('change', atualizarCargos);
+        empresaSelect.addEventListener('change', atualizarcargos);
     }
-    atualizarCargos();
+    atualizarcargos();
 });
 </script>
     <script src="js/validacoes.js"></script>

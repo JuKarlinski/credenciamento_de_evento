@@ -1,16 +1,12 @@
 function validarCPF() {
-
     let cpf = document.getElementById("cpf").value;
-
     cpf = cpf.replace(/\D/g, "");
-
     const erro = document.getElementById("erroCPF");
 
     if (cpf.length != 11) {
         erro.innerHTML = "CPF inválido.";
         return;
     }
-
     if (/^(\d)\1+$/.test(cpf)) {
         erro.innerHTML = "CPF inválido.";
         return;

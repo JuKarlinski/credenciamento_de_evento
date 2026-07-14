@@ -17,8 +17,8 @@ include_once("logs.php");
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $sql = "SELECT * FROM empresas WHERE ID = $id";
 $resultado = $conexao->query($sql);
-$tipos = $conexao->query("SELECT * FROM TIPOS");
-$temTipos = ($tipos && $tipos->num_rows > 0);
+$tipos = $conexao->query("SELECT * FROM tipos");
+$temtipos = ($tipos && $tipos->num_rows > 0);
 $dados = $resultado->fetch_assoc();
 $tipo_empresa = $dados['TIPO_ID'] ?? null;
 $espacosAtual = $dados['QUANTIDADE_ESPACOS'] ?? 0;
@@ -43,7 +43,7 @@ if ($_POST) {
         $tipo_empresa = "NULL";
         $quantidade_espacos = 0;
     } else {
-        $res = $conexao->query("SELECT CONTROLA_ESPACOS FROM TIPOS WHERE ID = $tipo_empresa");
+        $res = $conexao->query("SELECT CONTROLA_ESPACOS FROM tipos WHERE ID = $tipo_empresa");
         if ($res && $res->num_rows > 0) {
             $tipo = $res->fetch_assoc();
             if ($tipo['CONTROLA_ESPACOS'] != 'S') {
@@ -76,11 +76,11 @@ $dadosNovos =
 
 registrarLog(
     'ALTERACAO',
-    'EMPRESAS',
+    'empresas',
     $dadosAntigos,
     $dadosNovos
 );
-        header("Location: pag1.php?pagina=EMPRESAS");
+        header("Location: pag1.php?pagina=empresas");
         exit;
     } else {
         echo "Erro ao atualizar: " . $conexao->error;
@@ -98,7 +98,7 @@ registrarLog(
                  class="form-control" required>
        <label>Tipo:</label>
 <select name="tipo_empresa" id="tipo_empresa" class="form-control" onchange="verificarEspacos()">
-<?php if ($temTipos) { ?>
+<?php if ($temtipos) { ?>
     <?php while($t = $tipos->fetch_assoc()) { ?>
         <option
             value="<?= $t['ID'] ?>"

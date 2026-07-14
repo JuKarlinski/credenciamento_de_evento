@@ -2,8 +2,8 @@
 include_once('conexao.php');
 include_once("logs.php");
 
-$tipos = $conexao->query("SELECT * FROM TIPOS");
-$temTipos = ($tipos && $tipos->num_rows > 0);
+$tipos = $conexao->query("SELECT * FROM tipos");
+$temtipos = ($tipos && $tipos->num_rows > 0);
 
 if ($_POST) {
     $nome = trim(strip_tags($_POST['nome']));
@@ -11,7 +11,7 @@ if ($_POST) {
     $razao_social = trim(strip_tags($_POST['razao_social']));
     $cnpj = preg_replace('/[^0-9]/', '', $_POST['cnpj']);
     $tipo_empresa = isset($_POST['tipo_empresa']) ? intval($_POST['tipo_empresa']) : null;
-    $res = $conexao->query("SELECT CONTROLA_ESPACOS FROM TIPOS WHERE ID = $tipo_empresa");
+    $res = $conexao->query("SELECT CONTROLA_ESPACOS FROM tipos WHERE ID = $tipo_empresa");
     $quantidade_espacos = isset($_POST['quantidade_espacos']) ? intval($_POST['quantidade_espacos']) : 0;
     $erro = '';
    if (empty($tipo_empresa)) {
@@ -47,10 +47,10 @@ $dadosLog =
 
 registrarLog(
     'INCLUSAO',
-    'EMPRESAS',
+    'empresas',
     $dadosLog
 );
-        header("Location: pag1.php?pagina=EMPRESAS");
+        header("Location: pag1.php?pagina=empresas");
         exit;
     } else {
         echo "<div class='alert alert-danger mt-3'>Erro ao salvar.</div>";
@@ -103,7 +103,7 @@ registrarLog(
       
       <label class="form-label">Tipo de Empresa:</label>
 <select name="tipo_empresa" id="tipo_empresa" class="form-control" onchange="verificarEspacos()">
-  <?php if ($temTipos) { ?>
+  <?php if ($temtipos) { ?>
     <option value="">Selecione o tipo</option>
     <?php while($t = $tipos->fetch_assoc()) { ?>
       <option value="<?= $t['ID'] ?>" data-controla="<?= $t['CONTROLA_ESPACOS'] ?>">

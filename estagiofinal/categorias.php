@@ -1,13 +1,13 @@
 <?php
 if ($_SESSION['CATEGORIA_ID'] == 3) {
-    header("Location: pag1.php?pagina=EMPRESAS");
+    header("Location: pag1.php?pagina=empresas");
     exit;
 }
 ?>
 <?php
 include_once("conexao.php");
 
-$sql = "SELECT * FROM CATEGORIAS";
+$sql = "SELECT * FROM categorias";
 $result = $conexao->query($sql);
 ?>
 <style>

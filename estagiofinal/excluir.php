@@ -24,7 +24,7 @@ if(isset($_GET['id'])){
 
     registrarLog(
         'EXCLUSAO',
-        'EMPRESAS',
+        'empresas',
         $dadosLog
     );
 }
@@ -48,7 +48,7 @@ if(isset($_GET['id'])){
 
     }
 
-    header("Location: pag1.php?pagina=EMPRESAS");
+    header("Location: pag1.php?pagina=empresas");
     exit;
 }
 ?>

@@ -71,24 +71,24 @@ if($nome != ''){
     <div class="col-md-3 col-lg-2 menu-custom text-white">
 <a href="pag1.php" class="d-block text-white p-2">
     <i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a href="?pagina=EMPRESAS" class="d-block text-white p-2">
+    <a href="?pagina=empresas" class="d-block text-white p-2">
     <i class="bi bi-building"></i> Empresas</a>
-    <a href="?pagina=PESSOAS" class="d-block text-white p-2">
+    <a href="?pagina=pessoas" class="d-block text-white p-2">
     <i class="bi bi-people"></i> Pessoas</a>
 
 <?php if (isset($_SESSION['CATEGORIA_ID']) && $_SESSION['CATEGORIA_ID'] == 1) { ?>
-<a href="?pagina=USUÁRIOS" class="d-block text-white p-2">
+<a href="?pagina=usuarios" class="d-block text-white p-2">
     <i class="bi bi-person-circle"></i> Usuários</a>
 <?php } ?>
 
 <?php if (($_SESSION['CATEGORIA_ID'] ?? null) != 3) { ?>
-<a href="?pagina=TIPOS" class="d-block text-white p-2">
+<a href="?pagina=tipos" class="d-block text-white p-2">
     <i class="bi bi-tags"></i> Tipos</a>
-<a href="?pagina=CARGOS" class="d-block text-white p-2">
+<a href="?pagina=cargos" class="d-block text-white p-2">
     <i class="bi bi-briefcase"></i> Cargos</a>
 <?php } ?>
 <?php if (isset($_SESSION['CATEGORIA_ID']) && $_SESSION['CATEGORIA_ID'] == 1) { ?>
-<a href="?pagina=LOGS_VISUALIZAR" class="d-block text-white p-2">
+<a href="?pagina=logs_visualizar" class="d-block text-white p-2">
     <i class="fas fa-clipboard-list"></i> Logs do Sistema</a>
 <?php } ?>
 <a href="index.php" class="d-block text-white p-2">
@@ -107,35 +107,35 @@ $pagina = isset($_GET['pagina']) ? $_GET['pagina'] : '';
 
 <?php
 
-if($pagina == "EMPRESAS"){
-    include("Empresas.php");
-} elseif($pagina == "CADASTRO"){
+if($pagina == "empresas"){
+    include("empresas.php");
+} elseif($pagina == "cadastro"){
     include("cadastro.php");
-} elseif($pagina == "ALTERAR"){
+} elseif($pagina == "alterar"){
     include("alterar.php");
-}  elseif($pagina == "PESSOAS"){
+}  elseif($pagina == "pessoas"){
     include("pessoas.php");
-}elseif($pagina == "CADASTRO1"){
+}elseif($pagina == "cadastro1"){
     include("cadastro1.php");
-}elseif($pagina == "ALTERARPE"){
+}elseif($pagina == "alterarpe"){
     include("alterarpe.php");
-}elseif($pagina == "CARGOS"){
+}elseif($pagina == "cargos"){
     include("cargos.php");
-}elseif($pagina == "TIPOS"){
+}elseif($pagina == "tipos"){
     include("tipos.php");
-}elseif($pagina == "USUÁRIOS"){
+}elseif($pagina == "usuarios"){
     include("usuarios.php");
-}elseif($pagina == "CATEGORIAS"){
+}elseif($pagina == "categorias"){
     include("categorias.php");
-}elseif($pagina == "NOVOUSUARIO"){
+}elseif($pagina == "novousuario"){
     include("novousuario.php");
-}elseif($pagina == "EDITAR"){
+}elseif($pagina == "editar"){
     include("editar.php");
-}elseif ($pagina == "LOGS_VISUALIZAR") {
+}elseif ($pagina == "logs_visualizar") {
     include_once("logs_visualizar.php");
-}elseif ($pagina == "IMPORTAR_EMPRESAS") {
+}elseif ($pagina == "importar_empresas") {
     include_once("importar_empresas.php");
-}elseif ($pagina == "IMPORTAR_PESSOAS") {
+}elseif ($pagina == "importar_pessoas") {
     include_once("importar_pessoas.php");
 }
 

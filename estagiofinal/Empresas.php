@@ -52,7 +52,7 @@
     <?php if (isset($_SESSION['CATEGORIA_ID'])): ?>
    <?php if ($_SESSION['CATEGORIA_ID'] == 1): ?>
     <button type="button"
-            onclick="window.location.href='?pagina=CADASTRO'"
+            onclick="window.location.href='?pagina=cadastro'"
             class="btn btn-dark">
         Nova Empresa
     </button>
@@ -66,7 +66,7 @@
 <?php endif; ?>
 <?php endif; ?>
 <?php if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) { ?>
-    <a href="pag1.php?pagina=IMPORTAR_EMPRESAS" class="btn btn-dark">
+    <a href="pag1.php?pagina=importar_empresas" class="btn btn-dark">
     Importar
 </a>
 <?php } ?>
@@ -81,7 +81,7 @@ $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
 </a>
   <?php if (($_SESSION['CATEGORIA_ID'] ?? null) != 3) { ?>
 <form method="GET" action="">
-    <input type="hidden" name="pagina" value="EMPRESAS">
+    <input type="hidden" name="pagina" value="empresas">
    <div class="row align-items-center">
   <div class="col-md-6 mb-3">
     <br><input type="text"
@@ -94,7 +94,7 @@ $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
   <button type="submit" class="btn btn-dark mr-3">
     <i class="bi bi-search"></i>
   </button>
-  <a href="pag1.php?pagina=EMPRESAS" class="btn btn-dark px-4">
+  <a href="pag1.php?pagina=empresas" class="btn btn-dark px-4">
     Limpar
   </a>
 </div>
@@ -108,7 +108,7 @@ $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
 
 <?php
 include_once("conexao.php");
-$sql_total = "SELECT COUNT(*) as total FROM EMPRESAS e LEFT JOIN TIPOS t ON e.TIPO_ID = t.ID WHERE 1=1";
+$sql_total = "SELECT COUNT(*) as total FROM EMPRESAS e LEFT JOIN tipos t ON e.TIPO_ID = t.ID WHERE 1=1";
 
 if (isset($_SESSION['CATEGORIA_ID']) && $_SESSION['CATEGORIA_ID'] == 3) {
     $empresa_id = $_SESSION['EMPRESA_ID'];
@@ -137,7 +137,7 @@ if ($pagina < 1) $pagina = 1;
 $offset = ($pagina - 1) * $limite;
 include_once("logs.php");
 
-$tipos = $conexao->query("SELECT * FROM TIPOS");
+$tipos = $conexao->query("SELECT * FROM tipos");
 $empresa_id = isset($_GET['empresa_id']) ? intval($_GET['empresa_id']) : 0;
 $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
 $ano = isset($_POST['ano']) ? trim($_POST['ano']) : '';
@@ -153,8 +153,8 @@ SELECT
     e.CNPJ,
     e.QUANTIDADE_ESPACOS,
     t.NOME AS TIPO
-FROM EMPRESAS e
-LEFT JOIN TIPOS t ON e.TIPO_ID = t.ID
+FROM empresas e
+LEFT JOIN tipos t ON e.TIPO_ID = t.ID
 WHERE 1=1
 ";
 
@@ -207,7 +207,7 @@ if (isset($_GET['delete'])) {
     }
     $id = intval($_GET['delete']);
     $buscaEmpresa = $conexao->query("
-    SELECT * FROM EMPRESAS
+    SELECT * FROM empresas
     WHERE ID = $id
 ");
 
@@ -223,11 +223,11 @@ $dadosLog =
 
   registrarLog(
     'EXCLUSAO',
-    'EMPRESAS',
+    'empresas',
     $dadosLog
 );
-    $conexao->query("DELETE FROM EMPRESAS WHERE ID = $id");
-    echo "<script>window.location.href='pag1.php?pagina=EMPRESAS';</script>";
+    $conexao->query("DELETE FROM empresas WHERE ID = $id");
+    echo "<script>window.location.href='pag1.php?pagina=empresas';</script>";
 exit;
 }
 $result = $conexao->query($sql);
@@ -251,21 +251,21 @@ if ($result && $result->num_rows > 0) {
 
        echo '<td class="col-acoes">';
 
-echo '<a href="?pagina=PESSOAS&empresa_id=' . $linha['ID'] . '" 
+echo '<a href="?pagina=pessoas&empresa_id=' . $linha['ID'] . '" 
           class="btn btn-dark btn-sm">
           Pessoas
       </a>';
 if (in_array($_SESSION['CATEGORIA_ID'] ?? 0, [1,2,3])) {
-    echo '<a href="pag1.php?pagina=IMPORTAR_PESSOAS&empresa_id=' . $linha['ID'] . '"
+    echo '<a href="pag1.php?pagina=importar_pessoas&empresa_id=' . $linha['ID'] . '"
               class="btn btn-primary btn-sm">
               Importar Pessoa
           </a>';
 }
-echo '<a href="pag1.php?pagina=USUÁRIOS&empresa_id=' . $linha['ID'] . '" 
+echo '<a href="pag1.php?pagina=usuarios&empresa_id=' . $linha['ID'] . '" 
           class="btn btn-info btn-sm">
           Usuários
       </a>';
-echo '<a href="pag1.php?pagina=CARGOS&empresa_id=' . $linha['ID'] . '" 
+echo '<a href="pag1.php?pagina=cargos&empresa_id=' . $linha['ID'] . '" 
           class="btn btn-secondary btn-sm">
           Cargos
       </a>';
@@ -274,9 +274,9 @@ $cat = $_SESSION['CATEGORIA_ID'] ?? 0;
 
 
 if ($cat == 1) {
-    echo '<a href="pag1.php?pagina=ALTERAR&id=' . $linha['ID'] . '" class="btn btn-success btn-sm">Alterar</a>';
+    echo '<a href="pag1.php?pagina=alterar&id=' . $linha['ID'] . '" class="btn btn-success btn-sm">Alterar</a>';
 
-    echo '<a href="pag1.php?pagina=EMPRESAS&delete=' . $linha['ID'] . '" class="btn btn-danger btn-sm"
+    echo '<a href="pag1.php?pagina=empresas&delete=' . $linha['ID'] . '" class="btn btn-danger btn-sm"
             onclick="return confirm(\'Deseja excluir esta empresa?\')">
             Excluir
           </a>';
@@ -375,7 +375,7 @@ $max_links = 2;
 if ($pagina > 1) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=EMPRESAS&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=empresas&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
             «
           </a>';
 
@@ -389,7 +389,7 @@ if ($pagina > 1) {
 
 if ($pagina > ($max_links + 1)) {
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=EMPRESAS&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
+            href="?pagina=empresas&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
     echo '<span class="dots">...</span>';
 }
 
@@ -401,7 +401,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
         echo '<span class="active-page">' . $i . '</span>';
     } else {
         echo '<a class="btn btn-outline-dark btn-sm"
-                href="?pagina=EMPRESAS&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
+                href="?pagina=empresas&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
                 . $i .
              '</a>';
     }
@@ -410,7 +410,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
 if ($pagina < $total_paginas - $max_links) {
     echo '<span class="dots">...</span>';
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=EMPRESAS&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
+            href="?pagina=empresas&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
             . $total_paginas .
          '</a>';
 }
@@ -418,7 +418,7 @@ if ($pagina < $total_paginas - $max_links) {
 if ($pagina < $total_paginas) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=EMPRESAS&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=empresas&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
             »
           </a>';
 

@@ -20,12 +20,12 @@ if (isset($_POST['importar'])) {
 
         if ($linhasArquivo !== false) {
             $tipos = [];
-            $sqlTipos = $conexao->query("
+            $sqltipos = $conexao->query("
                 SELECT ID, NOME 
-                FROM TIPOS
+                FROM tipos
             ");
 
-            while ($tipo = $sqlTipos->fetch_assoc()) {
+            while ($tipo = $sqltipos->fetch_assoc()) {
                $tipos[strtoupper(trim($tipo['NOME']))] = $tipo['ID'];
             }
 
@@ -77,7 +77,7 @@ if (isset($_POST['importar'])) {
 
     $verifica = $conexao->prepare("
     SELECT ID
-    FROM EMPRESAS
+    FROM empresas
     WHERE UPPER(NOME_FANTASIA) = UPPER(?)
     AND ANO = ?
 ");
@@ -100,7 +100,7 @@ $resultado = $verifica->get_result();
                 $verifica->close();
 
 $stmt = $conexao->prepare("
-    INSERT INTO EMPRESAS (ANO, NOME_FANTASIA, RAZAO_SOCIAL, TIPO_ID)
+    INSERT INTO empresas (ANO, NOME_FANTASIA, RAZAO_SOCIAL, TIPO_ID)
 VALUES (?, ?, ?, ?)
 ");
 
@@ -117,7 +117,7 @@ $stmt->bind_param("issi", $ano, $nome_fantasia, $razao_social, $tipo_id);
                                 "RAZAO_SOCIAL=" . trim($razao_social_limpo) . " | " .
                                 "TIPO_ID=" . $tipo_id;
 
-                    registrarLog('IMPORTACAO', 'EMPRESAS', $dadosLog);
+                    registrarLog('IMPORTACAO', 'empresas', $dadosLog);
                     $importadas++;
                } else {
     $linhasIgnoradas[] = [
@@ -246,7 +246,7 @@ if ($ignoradas > 0) {
 
                     </button>
 
-                    <a href="pag1.php?pagina=EMPRESAS"
+                    <a href="pag1.php?pagina=empresas"
                        class="btn btn-secondary">
 
                         <i class="bi bi-arrow-left"></i>

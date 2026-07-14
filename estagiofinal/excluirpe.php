@@ -19,7 +19,7 @@ if(isset($_GET['id'])){
         
     registrarLog(
         'EXCLUSAO',
-        'PESSOAS',
+        'pessoas',
         $dadosLog
     );
 }
@@ -37,7 +37,7 @@ if(isset($_GET['id'])){
             AUTO_INCREMENT = 1
         ");
     }
-    header("Location: pag1.php?pagina=PESSOAS");
+    header("Location: pag1.php?pagina=pessoas");
     exit;
 }
 ?>

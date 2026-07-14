@@ -2,6 +2,10 @@
 include_once('conexao.php');
 include_once("logs.php");
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
 $editar = false;
 $dadosEditar = null;
@@ -11,7 +15,7 @@ if (isset($_GET['editar']) && !empty($_GET['editar'])) {
     $editar = true;
     $id_editar = intval($_GET['editar']);
 
-    $sql_editar = "SELECT * FROM TIPOS WHERE ID = $id_editar";
+    $sql_editar = "SELECT * FROM tipos WHERE ID = $id_editar";
     $result_editar = $conexao->query($sql_editar);
     $dadosEditar = $result_editar->fetch_assoc();
 }
@@ -25,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $limite = intval($_POST['limite_pessoas']);
 
         $sql = "
-            UPDATE TIPOS
+            UPDATE tipos
             SET NOME = '$nome',
                 CONTROLA_ESPACOS = '$controla',
                 LIMITE_PESSOAS = '$limite'
@@ -33,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ";
 
       $buscaAntigo = $conexao->query("
-    SELECT * FROM TIPOS
+    SELECT * FROM tipos
     WHERE ID = $id
 ");
 
@@ -55,12 +59,12 @@ $dadosNovos =
 
 registrarLog(
     'ALTERACAO',
-    'TIPOS',
+    'tipos',
     $dadosAntigos,
     $dadosNovos
 );
 
-header("Location: pag1.php?pagina=TIPOS");
+header("Location: pag1.php?pagina=tipos");
 exit;
     }
     if (($_SESSION['CATEGORIA_ID'] ?? null) == 2) {
@@ -71,7 +75,7 @@ exit;
     $controla = $_POST['controla_espacos'];
     $limite = intval($_POST['limite_pessoas']);
     $sql = "
-        INSERT INTO TIPOS (NOME, CONTROLA_ESPACOS, LIMITE_PESSOAS)
+        INSERT INTO tipos (NOME, CONTROLA_ESPACOS, LIMITE_PESSOAS)
         VALUES ('$nome', '$controla', '$limite')
     ";
 
@@ -87,11 +91,11 @@ $dadosLog =
 
 registrarLog(
     'INCLUSAO',
-    'TIPOS',
+    'tipos',
     $dadosLog
 );
 
-header("Location: pag1.php?pagina=TIPOS");
+header("Location: pag1.php?pagina=tipos");
 exit;
 }
 if (isset($_GET['delete'])) {
@@ -101,7 +105,7 @@ if (isset($_GET['delete'])) {
 $id = intval($_GET['delete']);
 
 $buscaTipo = $conexao->query("
-    SELECT * FROM TIPOS
+    SELECT * FROM tipos
     WHERE ID = $id
 ");
 
@@ -117,15 +121,15 @@ if ($buscaTipo && $buscaTipo->num_rows > 0) {
         
 registrarLog(
     'EXCLUSAO',
-    'TIPOS',
+    'tipos',
     $dadosLog
 );
 }
 
-$sql = "DELETE FROM TIPOS WHERE ID = $id";
+$sql = "DELETE FROM tipos WHERE ID = $id";
 $conexao->query($sql);
 
-header("Location: pag1.php?pagina=TIPOS");
+header("Location: pag1.php?pagina=tipos");
 exit;
 }
 ?>
@@ -221,7 +225,7 @@ exit;
 
         <button class="btn btn-success btn-block">Salvar Alterações</button>
 
-        <a href="pag1.php?pagina=TIPOS"
+        <a href="pag1.php?pagina=tipos"
            class="btn btn-secondary btn-block">
            Cancelar
         </a>
@@ -245,7 +249,7 @@ exit;
  </div>
  <br>
 <form method="GET" action="">
-    <input type="hidden" name="pagina" value="TIPOS">
+    <input type="hidden" name="pagina" value="tipos">
 
     <div class="form-row align-items-end">
 
@@ -264,7 +268,7 @@ exit;
         </div>
 
         <div class="col-auto">
-            <a href="pag1.php?pagina=TIPOS"
+            <a href="pag1.php?pagina=tipos"
                class="btn btn-dark">
                 Limpar
             </a>
@@ -277,7 +281,7 @@ exit;
 <div class="container mt-4">
 
 <?php
-$sql = "SELECT * FROM TIPOS WHERE 1=1";
+$sql = "SELECT * FROM tipos WHERE 1=1";
 $por_pagina = 10;
 $pagina = isset($_GET['pagina_num']) ? intval($_GET['pagina_num']) : 1;
 $pagina = max(1, $pagina);
@@ -286,9 +290,9 @@ $inicio = ($pagina - 1) * $por_pagina;
 
 if (!empty($nome)) {
 $nome_safe = $conexao->real_escape_string($nome);
-    $sql .= " AND NOME LIKE '%$nome%'";
+    $sql .= " AND NOME LIKE '%$nome_safe%'";
 }
-$sql_total = "SELECT * FROM TIPOS WHERE 1=1";
+$sql_total = "SELECT * FROM tipos WHERE 1=1";
 
 if (!empty($nome)) {
     $nome_safe = $conexao->real_escape_string($nome);
@@ -341,11 +345,11 @@ $total_paginas = ceil($total / $por_pagina);
           <td>
 
             <?php if (($_SESSION['CATEGORIA_ID'] ?? null) == 1) { ?>
-              <a href="pag1.php?pagina=TIPOS&editar=<?= $linha['ID'] ?>"
+              <a href="pag1.php?pagina=tipos&editar=<?= $linha['ID'] ?>"
                 class="btn btn-success btn-sm">
                  Alterar
               </a>
-              <a href="pag1.php?pagina=TIPOS&delete=<?= $linha['ID'] ?>"
+              <a href="pag1.php?pagina=tipos&delete=<?= $linha['ID'] ?>"
                  class="btn btn-danger btn-sm"
                  onclick="return confirm('Deseja excluir este tipo?')">
                  Excluir
@@ -362,9 +366,9 @@ $total_paginas = ceil($total / $por_pagina);
 
         </tr>
       <?php } ?>
-    </tbody>
-    </body>
+    </tbody> 
   </table>
+</body>
 <style>
 .pagination-custom {
     margin-top: 20px;
@@ -411,7 +415,7 @@ $max_links = 2;
 if ($pagina > 1) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=TIPOS&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=tipos&pagina_num=' . ($pagina - 1) . '&nome=' . urlencode($nome) . '">
             «
           </a>';
 
@@ -425,7 +429,7 @@ if ($pagina > 1) {
 
 if ($pagina > ($max_links + 1)) {
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=TIPOS&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
+            href="?pagina=tipos&pagina_num=1&nome=' . urlencode($nome) . '">1</a>';
     echo '<span class="dots">...</span>';
 }
 
@@ -437,7 +441,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
         echo '<span class="active-page">' . $i . '</span>';
     } else {
         echo '<a class="btn btn-outline-dark btn-sm"
-                href="?pagina=TIPOS&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
+                href="?pagina=tipos&pagina_num=' . $i . '&nome=' . urlencode($nome) . '">'
                 . $i .
              '</a>';
     }
@@ -446,7 +450,7 @@ for ($i = $pagina - $max_links; $i <= $pagina + $max_links; $i++) {
 if ($pagina < $total_paginas - $max_links) {
     echo '<span class="dots">...</span>';
     echo '<a class="btn btn-outline-dark btn-sm"
-            href="?pagina=TIPOS&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
+            href="?pagina=tipos&pagina_num=' . $total_paginas . '&nome=' . urlencode($nome) . '">'
             . $total_paginas .
          '</a>';
 }
@@ -454,7 +458,7 @@ if ($pagina < $total_paginas - $max_links) {
 if ($pagina < $total_paginas) {
 
     echo '<a class="btn btn-dark btn-sm"
-            href="?pagina=TIPOS&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
+            href="?pagina=tipos&pagina_num=' . ($pagina + 1) . '&nome=' . urlencode($nome) . '">
             »
           </a>';
 

@@ -92,11 +92,11 @@ $dadosNovos =
 
 registrarLog(
     'ALTERACAO',
-    'PESSOAS',
+    'pessoas',
     $dadosAntigos,
     $dadosNovos
 );
-        header("Location: pag1.php?pagina=PESSOAS");
+        header("Location: pag1.php?pagina=pessoas");
         exit;
     } else {
         echo "<div class='alert alert-danger'>Erro: " . $conexao->error . "</div>";

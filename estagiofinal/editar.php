@@ -57,7 +57,7 @@ $dadosAntigos =
 
 registrarLog(
     'ALTERACAO',
-    'USUARIOS',
+    'usuarios',
     $dadosAntigos,
     $dadosNovos
 );
@@ -68,9 +68,9 @@ registrarLog(
                     $nome_origem = $res_emp->fetch_assoc()['NOME_FANTASIA'];
                 }
             }
-            header("Location: pag1.php?pagina=USUÁRIOS&empresa_id=" . $empresa_origem . "&nome=" . urlencode($nome_origem));
+            header("Location: pag1.php?pagina=usuarios&empresa_id=" . $empresa_origem . "&nome=" . urlencode($nome_origem));
         } else {
-            header("Location: pag1.php?pagina=USUÁRIOS");
+            header("Location: pag1.php?pagina=usuario");
         }
         exit;
         

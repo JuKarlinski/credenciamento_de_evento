@@ -21,17 +21,15 @@ SELECT
     e.CNPJ,
     e.QUANTIDADE_ESPACOS,
     t.NOME AS TIPO
-FROM EMPRESAS e
-LEFT JOIN TIPOS t ON e.TIPO_ID = t.ID
+FROM empresas e
+LEFT JOIN tipos t ON e.TIPO_ID = t.ID
 WHERE 1=1
 ";
 
-// 🔥 FILTRO DO EXPOXITOR (SÓ VÊ SUA EMPRESA)
 if ($categoria == 3 && !empty($empresa_id)) {
     $sql .= " AND e.ID = " . intval($empresa_id);
 }
 
-// 🔎 FILTRO POR NOME
 if (!empty($nome)) {
     $nome = $conexao->real_escape_string($nome);
 
